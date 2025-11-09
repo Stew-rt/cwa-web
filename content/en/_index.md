@@ -1,10 +1,11 @@
 ---
 title: "Cornwall Wargames Association"
-description: ""
+
 cascade:
   featured_image: '/images/cwa-hero-1.webp'
 ---
 A miniatures gaming club held at the _Village Hall_ in _Quintrell Downs_ _every other Sunday._
+
 
 ## Upcoming Club Dates
 ### 2024

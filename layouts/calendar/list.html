@@ -1,0 +1,38 @@
+{{ define "main" }}
+  <!-- Placeholder that calendar.js will fill -->
+  <div id="year-calendar">Loading calendar…</div>
+
+  {{ $remoteIcal := resources.GetRemote "https://unpkg.com/ical.js/dist/ical.es5.min.cjs" }}
+  {{ $localIcal  := resources.Get "js/ical.min.cjs" }}
+  {{ $ical := cond (ne $remoteIcal nil) $remoteIcal $localIcal }}
+
+  {{ $custom := resources.Get "js/calendar.js" }}
+
+  {{ if eq hugo.Environment "development" }}
+    <script>console.log("DEV")</script>
+    {{ with $ical }}
+      <script src="{{ .RelPermalink }}"></script>
+    {{ else }}
+      <script>console.error("⚠️ ical.js not found – calendar will not work.")</script>
+    {{ end }}
+
+    {{ with $custom }}
+      <script src="{{ .RelPermalink }}"></script>
+    {{ else }}
+      <script>console.error("⚠️ calendar.js not found – calendar will not work.")</script>
+    {{ end }}
+
+  {{ else }}
+    <script>console.log("PROD")</script>
+    {{ $bundle := slice $ical $custom
+                 | resources.Concat "js/calendar.bundle.js"
+                 | resources.Minify
+                 | resources.Fingerprint }}
+
+    {{ with $bundle }}
+      <script src="{{ .RelPermalink }}"></script>
+    {{ else }}
+      <script>console.error("⚠️ Bundle creation failed – calendar will not work.")</script>
+    {{ end }}
+  {{ end }}
+{{ end }}

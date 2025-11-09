@@ -1,10 +1,11 @@
-baseURL = 'https://stew-rt.github.io/cwa-web/'
+baseURL = 'https://cornwallwargamesassociation.org/'
 languageCode = 'en-us'
 title = 'Cornwall Wargames Association'
 
 DefaultContentLanguage = "en"
 SectionPagesMenu = "main"
 enableRobotsTXT = true
+allowRemoteResources = true
 
 [caches]
   [caches.images]
@@ -39,7 +40,6 @@ enableRobotsTXT = true
   recent_posts_number = 3
 
   [params.ananke.social.follow]
-    new_window_icon = false
     networks = [
       "facebook"
     ]

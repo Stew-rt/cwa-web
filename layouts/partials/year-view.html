@@ -1,0 +1,54 @@
+{{/* year‑view.html – expects $events (slice of dicts) and $year (int) */}}
+{{ $year := .year }}
+{{ $events := .events }}
+
+{{/* Index events by month → day → []event */}}
+{{ $byMonth := dict }}
+{{ range $e := $events }}
+  {{ $date := time.Parse "2006-01-02" $e.start }}
+  {{ if eq $date.Year $year }}
+    {{ $month := $date.Month }}
+  {{ $day   := $date.Day }}
+    {{ $key   := printf "%02d-%02d" $month $day }}
+    {{ $existing := index $byMonth $key | default slice }}
+    {{ $byMonth = merge $byMonth (dict $key (append $existing $e)) }}
+  {{ end }}
+{{ end }}
+
+<table class="year-view">
+  <thead>
+    <tr>
+      {{ range $m := seq 1 12 }}
+        <th>{{ time (printf "%d-%02d-01" $year $m) "January" }}</th>
+      {{ end }}
+   </tr>
+  </thead>
+  <tbody>
+    {{/* 31 rows – enough for any month */}}
+    {{ range $d := seq 1 31 }}
+      <tr>
+        {{ range $m := seq 1 12 }}
+          {{ $key := printf "%02d-%02d" $m $d }}
+          <td>
+       {{ with index $byMonth $key }}
+              {{ range . }}
+              <div class="event">
+                  <strong>{{ .summary }}</strong><br/>
+                  {{ .start }}{{ if ne .start .end }} – {{ .end }}{{ end }}
+                </div>
+       {{ end }}
+       {{ else }}
+              <!-- empty cell -->
+            {{ end }}
+          </td>
+        {{ end }}
+   </tr>
+    {{ end }}
+  </tbody>
+</table>
+
+<style>
+.year-view { width:100%; border-collapse:collapse; }
+.year-view th, .year-view td { border:1px solid #ddd; padding:4px; vertical-align:top; }
+.event { margin-bottom:4px; font-size:0.85rem; }
+</style>
